@@ -126,3 +126,17 @@ CortexCode has completed its planned prototype functionality and testing phase. 
 ## License
 
 No open-source license has been assigned yet. All rights are reserved by the project owner unless a license is added.
+
+## Screenshots
+
+### Dashboard Overview
+![CortexCode Dashboard](screenshots/dashboard-overview.png)
+
+### AI Assistant
+![CortexCode AI Assistant](screenshots/ai-assistant.png)
+
+### AI Code Fixer
+![CortexCode AI Code Fixer](screenshots/ai-code-fixer.png)
+
+### Analysis History
+![CortexCode Analysis History](screenshots/analysis-history.png)
