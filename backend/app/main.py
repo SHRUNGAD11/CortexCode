@@ -1,5 +1,6 @@
 
 import json
+import os
 import re
 import sqlite3
 import subprocess
@@ -52,59 +53,82 @@ async def global_exception_handler(
             "detail": "An unexpected server error occurred. Please try again."
         }
     )
+
+# ============================================================
+# CORS CONFIGURATION
+# ============================================================
+
+DEFAULT_CORS_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:5174",
+    "http://127.0.0.1:5174",
+    "http://localhost:5176",
+    "http://127.0.0.1:5176",
+]
+
+CORS_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv(
+        "CORS_ORIGINS",
+        ",".join(DEFAULT_CORS_ORIGINS)
+    ).split(",")
+    if origin.strip()
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-        "http://localhost:5174",
-        "http://127.0.0.1:5174",
-        "http://localhost:5176",
-        "http://127.0.0.1:5176"
-    ],
+    allow_origins=CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"]
 )
 
 
-# ============================================================
-# PROJECT PATHS
-# ============================================================
-# ============================================================
-# LOCAL AI CONFIGURATION
-# ============================================================
 
-OLLAMA_URL = "http://127.0.0.1:11434/api/generate"
-OLLAMA_MODEL = "qwen2.5-coder:7b"
+# ============================================================
+# PROJECT AND ENVIRONMENT CONFIGURATION
+# ============================================================
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
-ENGINE_PATH = (
-    PROJECT_ROOT
-    / "cpp-engine"
-    / "build"
-    / "cortexcode.exe"
+# AI configuration
+OLLAMA_URL = os.getenv(
+    "OLLAMA_URL",
+    "http://127.0.0.1:11434/api/generate"
+)
+OLLAMA_MODEL = os.getenv(
+    "OLLAMA_MODEL",
+    "qwen2.5-coder:7b"
 )
 
-SAMPLE_DIR = (
-    PROJECT_ROOT
-    / "sample-code"
-).resolve()
-FIXED_DIR = (
-    PROJECT_ROOT
-    / "fixed-code"
-).resolve()
-
-DATABASE_PATH = (
-    PROJECT_ROOT
-    / "backend"
-    / "cortexcode.db"
+# C++ engine configuration
+ENGINE_DEFAULT_NAME = (
+    "cortexcode.exe" if os.name == "nt" else "cortexcode"
 )
+ENGINE_DEFAULT_PATH = (
+    PROJECT_ROOT / "cpp-engine" / "build" / ENGINE_DEFAULT_NAME
+)
+ENGINE_PATH = Path(
+    os.getenv("CORTEXCODE_ENGINE_PATH", str(ENGINE_DEFAULT_PATH))
+).expanduser()
 
-CLANG_TIDY_PATH = Path(
+# Project directories
+SAMPLE_DIR = (PROJECT_ROOT / "sample-code").resolve()
+FIXED_DIR = (PROJECT_ROOT / "fixed-code").resolve()
+
+# Database
+DATABASE_PATH = PROJECT_ROOT / "backend" / "cortexcode.db"
+
+# Clang-Tidy configuration
+CLANG_TIDY_DEFAULT = (
     r"C:\msys64\ucrt64\bin\clang-tidy.exe"
+    if os.name == "nt"
+    else "/usr/bin/clang-tidy"
 )
+CLANG_TIDY_PATH = Path(
+    os.getenv("CLANG_TIDY_PATH", CLANG_TIDY_DEFAULT)
+).expanduser()
 
 
 # ============================================================
