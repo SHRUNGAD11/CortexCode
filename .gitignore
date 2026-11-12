@@ -1,0 +1,49 @@
+﻿# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Node.js
+node_modules/
+dashboard/dist/
+npm-debug.log*
+
+# C++ build artifacts
+cpp-engine/build/
+*.exe
+*.obj
+*.o
+*.dll
+*.pdb
+
+# Databases and local data
+*.db
+*.sqlite
+*.sqlite3
+
+# Generated corrected files
+fixed-code/*
+!fixed-code/.gitkeep
+
+# Logs and coverage
+*.log
+.coverage
+htmlcov/
+
+# IDE and operating system
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local error logs
+error-log.txt
